@@ -1,112 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jungian Psyche Mandala</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Jungian Psyche Mandala</title>
 
-  <style>
-    /* -------- page centre -------- */
-    html, body {
-      height: 100%;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #111;
-      color: #fff;
-      font-family: system-ui, sans-serif;
-      user-select: none;               /* no text highlight while dragging */
-    }
+<style>
+/* ---------- root scale: 90 vmin / 1100 (base px) ---------- */
+:root{
+  --scale: calc(90vmin / 1100);        /* 90 % of the shorter side */
+}
 
-    /* -------- mandala container -------- */
-    .psychic-model {
-      position: relative;
-      width: 1100px;
-      height: 1100px;
-    }
+/* ---------- page centre ---------- */
+html,body{
+  height:100%;margin:0;
+  display:flex;justify-content:center;align-items:center;
+  background:#111;color:#fff;font-family:system-ui,sans-serif;
+  user-select:none;touch-action:none;          /* prevent 2-finger zoom while dragging */
+}
 
-    /* -------- generic node -------- */
-    .node {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform:
-        translate(-50%, -50%)
-        rotate(var(--angle))
-        translate(var(--radius))
-        rotate(calc(-1 * var(--angle)));
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      border-radius: 50%;
-      cursor: grab;
-      transition: transform 0.4s ease; /* default snap-back speed; overridden while dragging */
-    }
-    .node:active { cursor: grabbing; }
+/* ---------- mandala container ---------- */
+.psychic-model{
+  position:relative;
+  width:calc(1100px * var(--scale));
+  height:calc(1100px * var(--scale));
+}
 
-    /* -------- outline ring -------- */
-    .ring {
-      position: absolute;
-      top: 50%; left: 50%;
-      width: 100%; height: 100%;
-      transform: translate(-50%, -50%);
-      border: 2px solid #fff;
-      border-radius: 50%;
-      pointer-events: none;
-    }
-  </style>
+/* ---------- generic node ---------- */
+.node{
+  --diameter: calc(var(--size) * var(--scale));
+  --radiusPx: calc(var(--rBase) * var(--scale));
+
+  position:absolute;top:50%;left:50%;
+  transform:
+    translate(-50%,-50%)
+    rotate(var(--angle))
+    translate(var(--radiusPx))
+    rotate(calc(-1*var(--angle)));
+  width:var(--diameter);height:var(--diameter);
+  border-radius:50%;display:flex;justify-content:center;align-items:center;
+  text-align:center;font-size:calc(16px * var(--scale) + 0.4vmin);
+  cursor:grab;
+  transition:transform 0.4s ease;
+}
+.node:active{cursor:grabbing}
+.node{
+  padding: 10px;
+}
+/* ---------- outline ring ---------- */
+.ring{
+  position:absolute;top:50%;left:50%;
+  width:100%;height:100%;
+  transform:translate(-50%,-50%);
+  border:calc(2px * var(--scale)) solid #fff;
+  border-radius:50%;pointer-events:none;
+}
+</style>
 </head>
 <body>
 
-  <div class="psychic-model">
+<div class="psychic-model">
 
-    <div class="node" style="--radius:0;--angle:0deg;width:200px;height:200px;background:lightblue;">Self</div>
+  <!-- base‐radius(px),   size(px),  angle -->
+  <div class="node" style="--rBase:0;   --size:200; --angle:0deg;    background:lightblue;">Self</div>
+  <div class="node" style="--rBase:165; --size:80;  --angle:0deg;  z-index: 12;  background:antiquewhite;">Persona</div>
+  <div class="node" style="--rBase:100; --size:100; --angle:0deg;    background:#f39c12;">Ego</div>
+  <div class="node" style="--rBase:150; --size:100; --angle:210deg;  background:#2c3e50; z-index: 12;">Shadow</div>
+  <div class="node" style="--rBase:150; --size:100; --angle:-210deg;  background:#e74c3c; z-index: 12;">Anima / Animus</div>
+  <div class="node" style="--rBase:100; --size:150; --angle:180deg; background:#8e44ad; z-index: 1;">Personal<br>Unconscious</div>
+  <div class="node" style="--rBase:220; --size:200; --angle:180deg; background:#3498db;">Collective<br>Unconscious</div>
 
-    <div class="node" style="--radius:155px;--angle:0deg;width:80px;height:80px;background:antiquewhite;z-index:12;">Persona</div>
+  <div class="ring"></div>
+</div>
 
-    <div class="node" style="--radius:100px;--angle:0deg;width:100px;height:100px;background:#f39c12;">Ego</div>
+<script>
+document.querySelectorAll('.node').forEach(node => {
+  let startX, startY, originTransform, dragging = false;
 
-    <div class="node" style="--radius:150px;--angle:210deg;width:100px;height:100px;background:#2c3e50;z-index:12;">Shadow</div>
+  /* ---------- pointer down ---------- */
+  node.addEventListener('pointerdown', e => {
+    e.preventDefault();                                // stop scrolling on mobile
+    node.setPointerCapture(e.pointerId);
 
-    <div class="node" style="--radius:150px;--angle:-210deg;width:100px;height:100px;background:#e74c3c;z-index:12;">Anima / Animus</div>
+    originTransform =
+      window.getComputedStyle(node).transform === 'none'
+        ? ''                                           // unlikely, but safe-guard
+        : window.getComputedStyle(node).transform;
 
-    <div class="node" style="--radius:100px;--angle:180deg;width:150px;height:150px;background:#8e44ad;z-index:1;">Personal<br>Unconscious</div>
+    startX   = e.clientX;
+    startY   = e.clientY;
+    dragging = true;
+    node.style.transition = 'none';                    // free movement
+  });
 
-    <div class="node" style="--radius:220px;--angle:180deg;width:200px;height:200px;background:#3498db;">Collective<br>Unconscious</div>
+  /* ---------- pointer move ---------- */
+  node.addEventListener('pointermove', e => {
+    if (!dragging || !node.hasPointerCapture(e.pointerId)) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
 
-    <div class="ring"></div>
-  </div>
+    /* keep the polar layout, add a *relative* offset */
+    node.style.transform = `${originTransform} translate(${dx}px, ${dy}px)`;
+  });
 
-  <!-- ---------- DRAG SCRIPT (runs after DOM is ready) ---------- -->
-  <script>
-    document.querySelectorAll('.node').forEach(node => {
-      let startX, startY, originTransform;
+  /* ---------- pointer up ---------- */
+  node.addEventListener('pointerup', e => {
+    if (!dragging) return;
+    dragging = false;
+    node.releasePointerCapture(e.pointerId);
 
-      const onMouseMove = e => {
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-        node.style.transform = `${originTransform} translate(${dx}px, ${dy}px)`;
-      };
+    /* snap back to the exact polar transform we cached */
+    node.style.transition = 'transform 0.6s cubic-bezier(.17,.67,.43,1.31)';
+    node.style.transform  = originTransform;
 
-      const onMouseUp = () => {
-        document.removeEventListener('mousemove', onMouseMove);
-        node.style.transition = 'transform 0.6s cubic-bezier(.17,.67,.43,1.31)'; // elastic-ish
-        node.style.transform  = originTransform;   // snap back
-      };
+    /* after the snap-back animation, clear inline styles so
+       future viewport resizes recalculate correctly        */
+    node.addEventListener('transitionend', () => {
+      node.style.transition = '';
+      node.style.transform  = '';
+    }, { once: true });
+  });
+});
+</script>
 
-      node.addEventListener('mousedown', e => {
-        startX = e.clientX;
-        startY = e.clientY;
-        originTransform = window.getComputedStyle(node).transform === 'none'
-                          ? node.style.transform
-                          : window.getComputedStyle(node).transform;
-        node.style.transition = 'none';            // turn off easing while dragging
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp, { once: true });
-      });
-    });
-  </script>
 
 </body>
 </html>
