@@ -25,6 +25,10 @@ html,body{
   width:calc(1100px * var(--scale));
   height:calc(1100px * var(--scale));
 }
+.node{
+  font-family: jetbrains-mono, monospace;
+  font-weight: 900;
+}
 
 /* ---------- generic node ---------- */
 .node{
@@ -55,6 +59,32 @@ html,body{
   border:calc(2px * var(--scale)) solid #fff;
   border-radius:50%;pointer-events:none;
 }
+@media (max-width: 768px) {
+  :root {
+    --scale: calc(98vw / 1100);
+  }
+  .psychic-model {
+    width: 98vw;
+    height: 98vw;
+  }
+  .node {
+    font-size: calc(12px * var(--scale) + 0.8vmin);
+    padding: 6px;
+  }
+}
+@media (max-width: 480px) {
+  :root {
+    --scale: calc(98vw / 1100);
+  }
+  .psychic-model {
+    width: 98vw;
+    height: 98vw;
+  }
+  .node {
+    font-size: calc(10px * var(--scale) + 1vmin);
+    padding: 4px;
+  }
+}
 </style>
 </head>
 <body>
@@ -63,12 +93,12 @@ html,body{
 
   <!-- base‐radius(px),   size(px),  angle -->
   <div class="node" style="--rBase:0;   --size:200; --angle:0deg;    background:lightblue;">Self</div>
-  <div class="node" style="--rBase:165; --size:80;  --angle:0deg;  z-index: 12;  background:antiquewhite;">Persona</div>
+  <div class="node" style="--rBase:175; --size:80;  --angle:0deg;  z-index: 12;  background:antiquewhite;">Persona</div>
   <div class="node" style="--rBase:100; --size:100; --angle:0deg;    background:#f39c12;">Ego</div>
-  <div class="node" style="--rBase:150; --size:100; --angle:210deg;  background:#2c3e50; z-index: 12;">Shadow</div>
-  <div class="node" style="--rBase:150; --size:100; --angle:-210deg;  background:#e74c3c; z-index: 12;">Anima / Animus</div>
-  <div class="node" style="--rBase:100; --size:150; --angle:180deg; background:#8e44ad; z-index: 1;">Personal<br>Unconscious</div>
-  <div class="node" style="--rBase:220; --size:200; --angle:180deg; background:#3498db;">Collective<br>Unconscious</div>
+  <div class="node" style="--rBase:190; --size:100; --angle:210deg;  background:#2c3e50; z-index: 12;">Shadow</div>
+  <div class="node" style="--rBase:190; --size:100; --angle:-210deg;  background:#e74c3c; z-index: 12;">Anima / Animus</div>
+  <div class="node" style="--rBase:130; --size:150; --angle:180deg; background:#8e44ad; z-index: 1;">Personal<br>Unconscious</div>
+  <div class="node" style="--rBase:280; --size:200; --angle:180deg; background:#3498db;">Collective<br>Unconscious</div>
 
   <div class="ring"></div>
 </div>
