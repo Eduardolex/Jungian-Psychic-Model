@@ -45,7 +45,8 @@ html,body{
     rotate(var(--angle))
     translate(var(--radius))
     rotate(calc(-1*var(--angle)));
-
+    box-shadow: 0 0 12px 1px #fff;
+  box-shadow: 0 0 12px 1px #fff;
   inline-size:var(--diameter);block-size:var(--diameter);
   border-radius:50%;
   display:flex;justify-content:center;align-items:center;
@@ -103,6 +104,7 @@ canvas{position:fixed;inset:0;z-index:-1;background:#000}
     padding:.25rem .6rem;border-radius:4px;font-size:.75rem;
   }
 }
+
 </style>
 </head>
 <body>
@@ -150,6 +152,22 @@ canvas{position:fixed;inset:0;z-index:-1;background:#000}
 </div>
 
 <script>
+  /* Give each node its own angular velocity in deg / frame */
+const velocities = [0, 0.4, 0.25, 0.6, -0.45, 0.15, 0.08]; // first entry = Self
+
+const nodes = [...document.querySelectorAll('.node')];
+
+function tick() {
+  nodes.forEach((node, i) => {
+    if (i === 0) return;                         // skip Self
+    /* read current angle, add velocity, write it back */
+    const a = parseFloat(node.style.getPropertyValue('--angle')) || 0;
+    node.style.setProperty('--angle', `${a + velocities[i]}deg`);
+  });
+  requestAnimationFrame(tick);
+}
+tick();
+
 /* ------------------------------------------------------------------ */
 /* 1. Spiral animation on the full-screen canvas                      */
 /* ------------------------------------------------------------------ */
