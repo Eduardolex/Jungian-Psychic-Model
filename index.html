@@ -176,11 +176,17 @@ let DOTS = 600, SPACING = 2, ANGLE_STEP = 0.1, SPEED = 0.02;
 const canvas = document.getElementById('c');
 const ctx    = canvas.getContext('2d', { alpha:false });
 
-function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+function resize(){ 
+  canvas.width = innerWidth; 
+  canvas.height = innerHeight;
+  // Reinitialize canvas properties and background after resize
+  ctx.lineCap = 'round'; 
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 4;
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+}
 addEventListener('resize', resize, { passive:true }); resize();
-
-ctx.lineCap = 'round'; ctx.strokeStyle = '#fff';
-ctx.lineWidth = 4;
 
 let t = 0;
 function draw(){
@@ -202,9 +208,6 @@ function draw(){
   requestAnimationFrame(draw);
 }
 
-// Initialize canvas with a solid black background first
-ctx.fillStyle = '#000';
-ctx.fillRect(0,0,canvas.width,canvas.height);
 draw();
 
 /* ------------------------------------------------------------------ */
