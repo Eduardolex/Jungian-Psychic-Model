@@ -201,6 +201,10 @@ function draw(){
   t += SPEED;
   requestAnimationFrame(draw);
 }
+
+// Initialize canvas with a solid black background first
+ctx.fillStyle = '#000';
+ctx.fillRect(0,0,canvas.width,canvas.height);
 draw();
 
 /* ------------------------------------------------------------------ */
